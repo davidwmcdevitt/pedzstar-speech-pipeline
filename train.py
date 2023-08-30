@@ -34,7 +34,7 @@ if __name__ == "__main__":
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     model = model.to(device)
     next(model.parameters()).device
-    print("here")
+    print("here here")
     '''
     if args.class_weights:
         criterion = nn.CrossEntropyLoss(weight=dataset.class_weights)
