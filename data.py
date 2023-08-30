@@ -26,6 +26,21 @@ class AudioDataset:
         self.class_weights = args.class_weights
         
         ###data_path '/content/drive/MyDrive/PEDZSTAR/'
+        if len(os.listdir(self.data_path + 'data/adults/')) >= 0:
+            files = os.listdir(self.data_path + 'data/adults/')
+        
+            for file in files:
+                file_path = os.path.join(self.data_path + 'data/adults/', file)
+                if os.path.isfile(file_path):
+                    os.remove(file_path)
+        
+        if len(os.listdir(self.data_path + 'data/children/')) >= 0:
+            files = os.listdir(self.data_path + 'data/children/')
+        
+            for file in files:
+                file_path = os.path.join(self.data_path + 'data/children/', file)
+                if os.path.isfile(file_path):
+                    os.remove(file_path)
         
         if self.seed_only:
             adult_dirs = [self.data_path + 'input_files/seed_adults/']

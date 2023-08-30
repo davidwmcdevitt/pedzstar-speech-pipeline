@@ -131,7 +131,7 @@ if __name__ == "__main__":
           break_count = 0
           print("Saving model")
           model_name = data_path + ''
-          torch.save(model.state_dict(), '/content/drive/MyDrive/PEDZSTAR/exp_full_2class_08202023.pth')
+          torch.save(model.state_dict(), '/content/drive/MyDrive/PEDZSTAR/exp_full_2class_08292023.pth')
         else:
           break_count += 1
           if break_count > args.break_count:
