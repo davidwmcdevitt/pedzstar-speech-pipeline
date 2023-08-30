@@ -1,12 +1,8 @@
 import torch.nn as nn
+import torch.nn.init as init
 
-# ----------------------------
-# Audio Classification Model
-# ----------------------------
 class AudioClassifier (nn.Module):
-    # ----------------------------
-    # Build the model architecture
-    # ----------------------------
+    
     def __init__(self):
         super().__init__()
         conv_layers = []
@@ -74,15 +70,12 @@ class AudioClassifier (nn.Module):
     # Forward pass computations
     # ----------------------------
     def forward(self, x):
-        # Run the convolutional blocks
+        
         x = self.conv(x)
-
-        # Adaptive pool and flatten for input to linear layer
+        
         x = self.ap(x)
         x = x.view(x.shape[0], -1)
-
-        # Linear layer
+        
         x = self.lin(x)
-
-        # Final output
+        
         return x
