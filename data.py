@@ -25,6 +25,8 @@ class AudioDataset:
         self.transition_class = args.transition_class
         self.class_weights = args.class_weights
         
+        print("Building datasets")
+        
         ###data_path '/content/drive/MyDrive/PEDZSTAR/'
         if len(os.listdir(self.data_path + 'data/adults/')) >= 0:
             files = os.listdir(self.data_path + 'data/adults/')
