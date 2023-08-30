@@ -1,74 +1,41 @@
 import torch.nn as nn
 import torch.nn.init as init
+import torch.nn.functional as F
 
-class AudioClassifier (nn.Module):
-    
+class AudioClassifier(nn.Module):
     def __init__(self):
         super().__init__()
         conv_layers = []
+        
+        def add_conv_block(in_channels, out_channels, kernel_size, stride, padding, use_maxpool=False, a=0.1):
+            conv = nn.Conv2d(in_channels, out_channels, kernel_size=kernel_size, stride=stride, padding=padding)
+            relu = nn.ReLU()
+            bn = nn.BatchNorm2d(out_channels)
+            init.kaiming_normal_(conv.weight, a=a)
+            conv.bias.data.zero_()
+            block = [conv, relu, bn]
+            if use_maxpool:
+                block.append(nn.MaxPool2d(kernel_size=2, stride=2))
+            return block
 
-        # First Convolution Block with Relu and Batch Norm. Use Kaiming Initialization
-        self.conv1 = nn.Conv2d(2, 16, kernel_size=(5, 5), stride=(2, 2), padding=(2, 2))
-        self.relu1 = nn.ReLU()
-        self.bn1 = nn.BatchNorm2d(16)
-        init.kaiming_normal_(self.conv1.weight, a=0.1)
-        self.conv1.bias.data.zero_()
-        conv_layers += [self.conv1, self.relu1, self.bn1]
+        conv_layers += add_conv_block(2, 16, (5, 5), (2, 2), (2, 2))
+        conv_layers += add_conv_block(16, 32, (3, 3), (2, 2), (1, 1))
+        conv_layers += add_conv_block(32, 64, (3, 3), (1, 1), (1, 1))
+        conv_layers += add_conv_block(64, 128, (3, 3), (1, 1), (1, 1))
+        conv_layers += add_conv_block(128, 256, (3, 3), (2, 2), (1, 1))
+        conv_layers += add_conv_block(256, 512, (3, 3), (2, 2), (1, 1))
 
-        # Second Convolution Block
-        self.conv2 = nn.Conv2d(16, 32, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1))
-        self.relu2 = nn.ReLU()
-        self.bn2 = nn.BatchNorm2d(32)
-        init.kaiming_normal_(self.conv2.weight, a=0.1)
-        self.conv2.bias.data.zero_()
-        conv_layers += [self.conv2, self.relu2, self.bn2]
-
-        # Third Convolution Block
-        self.conv3 = nn.Conv2d(32, 64, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1))
-        self.relu3 = nn.ReLU()
-        self.bn3 = nn.BatchNorm2d(64)
-        init.kaiming_normal_(self.conv3.weight, a=0.1)
-        self.conv3.bias.data.zero_()
-        conv_layers += [self.conv3, self.relu3, self.bn3]
-
-        # Fourth Convolution Block
-        self.conv4 = nn.Conv2d(64, 128, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1))
-        self.relu4 = nn.ReLU()
-        self.bn4 = nn.BatchNorm2d(128)
-        init.kaiming_normal_(self.conv4.weight, a=0.1)
-        self.conv4.bias.data.zero_()
-        conv_layers += [self.conv4, self.relu4, self.bn4]
-
-        # Fifth Convolution Block
-        self.conv5 = nn.Conv2d(128, 256, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1))
-        self.relu5 = nn.ReLU()
-        self.bn5 = nn.BatchNorm2d(256)
-        init.kaiming_normal_(self.conv5.weight, a=0.1)
-        self.conv5.bias.data.zero_()
-        conv_layers += [self.conv5, self.relu5, self.bn5]
-
-        # Fifth Convolution Block
-        self.conv6 = nn.Conv2d(256, 512, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1))
-        self.relu6 = nn.ReLU()
-        self.bn6 = nn.BatchNorm2d(512)
-        init.kaiming_normal_(self.conv6.weight, a=0.1)
-        self.conv6.bias.data.zero_()
-        conv_layers += [self.conv6, self.relu6, self.bn6]
-
-        # Linear Classifier
-        self.ap = nn.AdaptiveAvgPool2d(output_size=1)
         self.lin1 = nn.Linear(in_features=512, out_features=128)
+        self.drop1 = nn.Dropout(0.1)
         self.lin2 = nn.Linear(in_features=128, out_features=32)
-        self.lin3 = nn.Linear(in_features=32, out_features=3)
+        self.drop2 = nn.Dropout(0.1)
+        self.lin3 = nn.Linear(in_features=32, out_features=2)
 
-        self.lin = nn.Sequential(*[self.lin1,self.lin2,self.lin3])
-
-        # Wrap the Convolutional Blocks
+        self.lin = nn.Sequential(*[self.lin1, self.drop1, self.lin2, self.drop2, self.lin3])
+        
         self.conv = nn.Sequential(*conv_layers)
+        self.ap = nn.AdaptiveAvgPool2d(output_size=1)
 
-    # ----------------------------
-    # Forward pass computations
-    # ----------------------------
     def forward(self, x):
         
         x = self.conv(x)
@@ -78,4 +45,4 @@ class AudioClassifier (nn.Module):
         
         x = self.lin(x)
         
-        return x
+        return F.softmax(x, dim=1)
