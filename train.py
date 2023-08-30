@@ -4,7 +4,7 @@ import time
 from sklearn.metrics import confusion_matrix, f1_score
 import argparse
 from model import AudioClassifier
-from data import create_dataset
+from data import AudioDataset
 from IPython.display import clear_output
 
 if __name__ == "__main__":
