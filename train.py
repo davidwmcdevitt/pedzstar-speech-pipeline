@@ -40,6 +40,8 @@ if __name__ == "__main__":
     
     assert os.path.exists(data_path + args.model_name)
     
+    '''
+    
     model = AudioClassifier()
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     model = model.to(device)
@@ -149,4 +151,5 @@ if __name__ == "__main__":
             break
     
     print('Finished Training')
+    '''
     
