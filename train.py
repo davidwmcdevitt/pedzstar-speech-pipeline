@@ -26,6 +26,8 @@ if __name__ == "__main__":
     
     args = parser.parse_args()
     
+    print('Parsed')
+    
     dataset = AudioDataset(args)
     
     data_path = args.data_path
