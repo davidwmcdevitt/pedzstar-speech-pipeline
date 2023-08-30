@@ -51,7 +51,7 @@ class AudioDataset:
             adult_dirs = [self.data_path + 'input_files/seed_adults/', self.data_path + 'input_files/cv_adults/']
             child_dirs = [self.data_path + 'input_files/seed_children/', self.data_path + 'input_files/darcy_children/']
             
-        clip_duration = self.clip_size * 1000
+        clip_duration = int(self.clip_size * 1000)
         
         for directory_path in adult_dirs:
         
