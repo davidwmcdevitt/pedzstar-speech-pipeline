@@ -32,7 +32,7 @@ if __name__ == "__main__":
     dataset = AudioDataset(args)
     
     data_path = args.data_path
-    checkpoint_name = data_path + args.model_name + datetime.now().strftime('%Y-%m-%d') + '.pth'
+    checkpoint_name = data_path + args.model_name + '/' + datetime.now().strftime('%Y-%m-%d') + '.pth'
     print(checkpoint_name)
     
     if not os.path.exists(data_path + args.model_name):
@@ -40,7 +40,6 @@ if __name__ == "__main__":
     
     assert os.path.exists(data_path + args.model_name)
     
-    '''
     
     model = AudioClassifier()
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
@@ -143,7 +142,7 @@ if __name__ == "__main__":
           high_score = acc
           break_count = 0
           print("Saving model")
-          checkpoint_name = data_path + args.model_name + current_datetime.strftime('%Y-%m-%d') + '.pth'
+          checkpoint_name = data_path + args.model_name + '/' + datetime.now().strftime('%Y-%m-%d') + '.pth'
           torch.save(model.state_dict(), '/content/drive/MyDrive/PEDZSTAR/exp_full_2class_08292023.pth')
         else:
           break_count += 1
@@ -151,5 +150,4 @@ if __name__ == "__main__":
             break
     
     print('Finished Training')
-    '''
     
