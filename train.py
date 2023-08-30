@@ -28,6 +28,8 @@ if __name__ == "__main__":
     
     print('Parsed')
     
+    '''
+    
     dataset = AudioDataset(args)
     
     data_path = args.data_path
@@ -140,3 +142,4 @@ if __name__ == "__main__":
             break
     
     print('Finished Training')
+    '''
