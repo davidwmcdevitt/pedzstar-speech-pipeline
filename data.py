@@ -51,7 +51,7 @@ class AudioDataset:
             adult_dirs = [self.data_path + 'input_files/seed_adults/', self.data_path + 'input_files/cv_adults/']
             child_dirs = [self.data_path + 'input_files/seed_children/', self.data_path + 'input_files/darcy_children/']
             
-        clip_duration = int(self.clip_size * 1000)
+        clip_duration = self.clip_size * 1000
         
         for directory_path in adult_dirs:
         
@@ -66,6 +66,8 @@ class AudioDataset:
           
                     for i, increment in enumerate(increments):
                       output_file = self.data_path + f'data/adults/{os.path.splitext(file_name)[0]}_{i + 1}.wav'
+                      increment = increment.set_frame_rate(44100)
+                      increment = increment.set_channels(1)
                       increment.export(output_file, format='wav')
                       
         for directory_path in child_dirs:
