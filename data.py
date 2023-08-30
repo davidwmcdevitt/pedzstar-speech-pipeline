@@ -23,7 +23,7 @@ class AudioDataset:
         self.noise_level = args.noise_level
         self.overlap_class = args.overlap_class
         self.transition_class = args.transition_class
-        self.class_weights = args.class_weights
+        
         
         print("Building datasets")
         
@@ -106,6 +106,17 @@ class AudioDataset:
         
         self.train_dl = torch.utils.data.DataLoader(train_ds, batch_size=self.batch_size, shuffle=True)
         self.val_dl = torch.utils.data.DataLoader(val_ds, batch_size=self.batch_size, shuffle=False)
+        
+        if args.class_weights:
+            
+            total_instances = df['classID'].count()
+            adults_instances = df['classID'].value_counts()['adults']
+            children_instances = total_instances - adults_instances
+            
+            weight_adults = adults_instances / (children_instances + adults_instances)
+            weight_children = children_instances / (children_instances + adults_instances)
+            
+            self.class_weights = torch.tensor([weight_adults, weight_children], dtype=torch.float32)
     
     
       
