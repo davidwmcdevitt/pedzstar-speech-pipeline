@@ -4,7 +4,6 @@ torch
 torchaudio
 matplotlib
 
-subprocess
 IPython
 pydub
 scikit-learn
