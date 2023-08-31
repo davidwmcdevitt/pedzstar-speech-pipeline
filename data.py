@@ -71,7 +71,7 @@ class AudioDataset:
         subfolders = []
         
         dirs = adult_dirs
-        dir.append(child_dirs)
+        dirs.append(child_dirs)
         
         for directory_path in dirs:
         
