@@ -15,6 +15,7 @@ class AudioDataset:
     def create_dataset(self, args):
         
         self.data_path = args.data_path
+        self.repo_path = args.repo_path
         self.seed_only = args.seed_only
         self.num_epochs = args.num_epochs
         self.train_split = args.train_split
@@ -28,73 +29,13 @@ class AudioDataset:
         
         print("Building datasets")
         
-        ###data_path '/content/drive/MyDrive/PEDZSTAR/'
-        if len(os.listdir(self.data_path + 'data/adults/')) >= 0:
-            files = os.listdir(self.data_path + 'data/adults/')
-        
-            for file in files:
-                file_path = os.path.join(self.data_path + 'data/adults/', file)
-                if os.path.isfile(file_path):
-                    os.remove(file_path)
-        
-        if len(os.listdir(self.data_path + 'data/children/')) >= 0:
-            files = os.listdir(self.data_path + 'data/children/')
-        
-            for file in files:
-                file_path = os.path.join(self.data_path + 'data/children/', file)
-                if os.path.isfile(file_path):
-                    os.remove(file_path)
-        
-        if self.seed_only:
-            adult_dirs = [self.data_path + 'input_files/seed_adults/']
-            child_dirs = [self.data_path + 'input_files/seed_children/']
-        else:
-            adult_dirs = [self.data_path + 'input_files/seed_adults/', self.data_path + 'input_files/cv_adults/']
-            child_dirs = [self.data_path + 'input_files/seed_children/', self.data_path + 'input_files/darcy_children/']
-            
-        clip_duration = 1000
-        
-        for directory_path in adult_dirs:
-        
-            for root, dirs, files in os.walk(directory_path):
-                for file_name in files:
-                  if file_name.endswith(".wav"):
-          
-                    audio = AudioSegment.from_wav(directory_path + file_name)
-          
-                    num_increments = len(audio) // clip_duration
-                    increments = [audio[i * clip_duration : (i + 1) * clip_duration] for i in range(num_increments)]
-          
-                    for i, increment in enumerate(increments):
-                      output_file = self.data_path + f'data/adults/{os.path.splitext(file_name)[0]}_{i + 1}.wav'
-                      increment = increment.set_frame_rate(44100)
-                      increment = increment.set_channels(1)
-                      increment.export(output_file, format='wav')
-                      
-        for directory_path in child_dirs:
-    
-          for root, dirs, files in os.walk(directory_path):
-              for file_name in files:
-                if file_name.endswith(".wav"):
-        
-                  audio = AudioSegment.from_wav(directory_path + file_name)
-        
-                  num_increments = len(audio) // clip_duration
-                  increments = [audio[i * clip_duration : (i + 1) * clip_duration] for i in range(num_increments)]
-        
-                  for i, increment in enumerate(increments):
-                    output_file = self.data_path + f'data/children/{os.path.splitext(file_name)[0]}_{i + 1}.wav'
-                    increment.export(output_file, format='wav')
-        
         relative_paths = []
         subfolders = []
         
-        cleaned_data_path = self.data_path +'data/'
-        
-        for root, dirs, files in os.walk(cleaned_data_path):
+        for root, dirs, files in os.walk(self.data_path):
             for file in files:
                 
-                relative_path = os.path.relpath(os.path.join(root, file), start=cleaned_data_path)
+                relative_path = os.path.relpath(os.path.join(root, file), start=self.data_path)
                 subfolder = os.path.basename(root)
                 
                 relative_paths.append(relative_path)

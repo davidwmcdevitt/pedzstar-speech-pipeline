@@ -13,7 +13,8 @@ if __name__ == "__main__":
     
     parser = argparse.ArgumentParser(description='PEDZSTAR Speech Pipeline Trainer')
     
-    parser.add_argument('--data_path', type=str, required=True, help='Path to the training data')
+    parser.add_argument('--repo_path', type=str, required=True, help='Path to GitHub repo')
+    parser.add_argument('--data_path', type=str, required=True, help='Path to training data')
     parser.add_argument('--model_name', type=str, required=True, help='Model Name')
     parser.add_argument('--seed_only', action='store_true', help='Designates experiment input as SEED data only ')
     parser.add_argument('--num_epochs', type=int, default=999, help='Number of training epochs')
@@ -35,10 +36,10 @@ if __name__ == "__main__":
     checkpoint_name = data_path + args.model_name + '/' + datetime.now().strftime('%Y-%m-%d') + '.pth'
     print(checkpoint_name)
     
-    if not os.path.exists(data_path + args.model_name):
-        os.makedirs(data_path + args.model_name)
+    if not os.path.exists(args.repo_path + args.model_name):
+        os.makedirs(args.repo_path + args.model_name)
     
-    assert os.path.exists(data_path + args.model_name)
+    assert os.path.exists(args.repo_path + args.model_name)
     
     
     model = AudioClassifier()
