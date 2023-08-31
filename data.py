@@ -86,6 +86,8 @@ class AudioDataset:
         
         df = pd.DataFrame({'relative_path': relative_paths, 'classID': subfolders})
         
+        print(df.head(25))
+        
         ds = SoundDS(df, self.data_path)
         
         num_items = len(ds)
