@@ -83,6 +83,7 @@ class SoundDS(Dataset):
 
   def __getitem__(self, idx):
     audio_file = self.data_path + self.df.loc[idx, 'relative_path']
+    print(audio_file)
     class_id = 0
     if self.df.loc[idx, 'classID'] == 'adults':
       class_id = 1
