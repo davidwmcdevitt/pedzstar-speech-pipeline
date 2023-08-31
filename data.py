@@ -74,6 +74,7 @@ class AudioDataset:
         directories.append(child_dirs)
         
         for directory_path in directories:
+            print(directory_path)
         
             for root, dirs, files in os.walk(directory_path):
                 for file in files:
