@@ -91,7 +91,7 @@ class AudioDataset:
         
         cleaned_data_path = self.data_path +'data/'
         
-        for root, dirs, files in os.walk(cleaned_data_path:
+        for root, dirs, files in os.walk(cleaned_data_path):
             for file in files:
                 
                 relative_path = os.path.relpath(os.path.join(root, file), start=cleaned_data_path)
