@@ -68,7 +68,7 @@ class AudioDataset:
                     increment.export(output_file, format='wav')
         
         relative_paths = []
-        subfolders = []
+        classIDs = []
         
         directories = [self.data_path + 'adults/',self.data_path + 'children/']
         
@@ -79,12 +79,15 @@ class AudioDataset:
                 for file in files:
                     
                     relative_path = os.path.relpath(os.path.join(root, file), start=directory_path)
-                    subfolder = os.path.basename(root)
+                    if 'adult' in relative_path:
+                        classID = 'adults'
+                    else:
+                        classID = 'children'
                     
                     relative_paths.append(relative_path)
-                    subfolders.append(subfolder)
+                    classIDs.append(classID)
         
-        df = pd.DataFrame({'relative_path': relative_paths, 'classID': subfolders})
+        df = pd.DataFrame({'relative_path': relative_paths, 'classID': classIDs})
         
         print(df.head(25))
         
