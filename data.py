@@ -78,10 +78,12 @@ class AudioDataset:
             for root, dirs, files in os.walk(directory_path):
                 for file in files:
                     
-                    relative_path = os.path.relpath(os.path.join(root, file), start=directory_path)
-                    if 'adult' in relative_path:
+                    #file = os.path.relpath(os.path.join(root, file), start=directory_path)
+                    if 'adult' in file:
+                        relative_path = 'adults/'+file
                         classID = 'adults'
                     else:
+                        relative_path = 'children/'+file
                         classID = 'children'
                     
                     relative_paths.append(relative_path)
