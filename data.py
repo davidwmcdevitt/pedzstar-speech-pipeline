@@ -73,7 +73,7 @@ class AudioDataset:
         directories = [self.data_path + 'adults/',self.data_path + 'children/']
         
         for directory_path in directories:
-            print(directory_path)
+            #print(directory_path)
         
             for root, dirs, files in os.walk(directory_path):
                 for file in files:
@@ -91,7 +91,7 @@ class AudioDataset:
         
         df = pd.DataFrame({'relative_path': relative_paths, 'classID': classIDs})
         
-        print(df.head(25))
+        #print(df.head(25))
         
         ds = SoundDS(df, self.data_path)
         
