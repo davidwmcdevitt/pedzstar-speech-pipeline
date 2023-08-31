@@ -26,8 +26,46 @@ class AudioDataset:
         self.overlap_class = args.overlap_class
         self.transition_class = args.transition_class
         
-        
         print("Building datasets")
+        
+        if self.seed_only:
+            adult_dirs = [self.data_path + 'seed_adults/']
+            child_dirs = [self.data_path + 'seed_children/']
+        else:
+            adult_dirs = [self.data_path + 'seed_adults/', self.data_path + 'cv_adults/']
+            child_dirs = [self.data_path + 'seed_children/', self.data_path + 'darcy_children/']
+            
+        clip_duration = 1000
+        
+        for directory_path in adult_dirs:
+        
+            for root, dirs, files in os.walk(directory_path):
+                for file_name in files:
+                  if file_name.endswith(".wav"):
+          
+                    audio = AudioSegment.from_wav(directory_path + file_name)
+          
+                    num_increments = len(audio) // clip_duration
+                    increments = [audio[i * clip_duration : (i + 1) * clip_duration] for i in range(num_increments)]
+          
+                    for i, increment in enumerate(increments):
+                      output_file = self.data_path + f'adults/{os.path.splitext(file_name)[0]}_{i + 1}.wav'
+                      increment.export(output_file, format='wav')
+                      
+        for directory_path in child_dirs:
+    
+          for root, dirs, files in os.walk(directory_path):
+              for file_name in files:
+                if file_name.endswith(".wav"):
+        
+                  audio = AudioSegment.from_wav(directory_path + file_name)
+        
+                  num_increments = len(audio) // clip_duration
+                  increments = [audio[i * clip_duration : (i + 1) * clip_duration] for i in range(num_increments)]
+        
+                  for i, increment in enumerate(increments):
+                    output_file = self.data_path + f'children/{os.path.splitext(file_name)[0]}_{i + 1}.wav'
+                    increment.export(output_file, format='wav')
         
         relative_paths = []
         subfolders = []
