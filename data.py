@@ -70,14 +70,16 @@ class AudioDataset:
         relative_paths = []
         subfolders = []
         
-        for root, dirs, files in os.walk(self.data_path):
-            for file in files:
-                
-                relative_path = os.path.relpath(os.path.join(root, file), start=self.data_path)
-                subfolder = os.path.basename(root)
-                
-                relative_paths.append(relative_path)
-                subfolders.append(subfolder)
+        for directory_path in adult_dirs.append(child_dirs):
+        
+            for root, dirs, files in os.walk(directory_path):
+                for file in files:
+                    
+                    relative_path = os.path.relpath(os.path.join(root, file), start=directory_path)
+                    subfolder = os.path.basename(root)
+                    
+                    relative_paths.append(relative_path)
+                    subfolders.append(subfolder)
         
         df = pd.DataFrame({'relative_path': relative_paths, 'classID': subfolders})
         
