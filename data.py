@@ -89,10 +89,12 @@ class AudioDataset:
         relative_paths = []
         subfolders = []
         
-        for root, dirs, files in os.walk(self.data_path):
+        cleaned_data_path = self.data_path +'data/'
+        
+        for root, dirs, files in os.walk(cleaned_data_path:
             for file in files:
                 
-                relative_path = os.path.relpath(os.path.join(root, file), start=self.data_path)
+                relative_path = os.path.relpath(os.path.join(root, file), start=cleaned_data_path)
                 subfolder = os.path.basename(root)
                 
                 relative_paths.append(relative_path)
