@@ -67,8 +67,6 @@ class AudioDataset:
           
                     for i, increment in enumerate(increments):
                       output_file = self.data_path + f'data/adults/{os.path.splitext(file_name)[0]}_{i + 1}.wav'
-                      increment = increment.set_frame_rate(44100)
-                      increment = increment.set_channels(1)
                       increment.export(output_file, format='wav')
                       
         for directory_path in child_dirs:
