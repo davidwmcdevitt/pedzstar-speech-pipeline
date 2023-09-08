@@ -171,7 +171,7 @@ class AudioDataset:
         
         df = pd.DataFrame({'relative_path': relative_paths, 'classID': classIDs})
         
-        ds = SoundDS(df, self.data_path)
+        ds = SoundDS(df, self.data_path, args)
         
         num_items = len(ds)
         num_train = round(num_items * self.train_split)

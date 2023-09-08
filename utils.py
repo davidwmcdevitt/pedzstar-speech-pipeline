@@ -70,13 +70,14 @@ class AudioUtil():
     return ((resig, sr))
 
 class SoundDS(Dataset):
-  def __init__(self, df, data_path):
+  def __init__(self, df, data_path, args):
     self.df = df
     self.data_path = str(data_path)
     self.duration = 1000
     self.sr = 44100
     self.channel = 2
     self.shift_pct = 0.4
+    self.args = args
     
   def __len__(self):
     return len(self.df)
@@ -84,8 +85,18 @@ class SoundDS(Dataset):
   def __getitem__(self, idx):
     audio_file = self.data_path + self.df.loc[idx, 'relative_path']
     class_id = 0
+    
     if self.df.loc[idx, 'classID'] == 'adults':
-      class_id = 1
+        class_id = 1
+    if self.df.loc[idx, 'classID'] == 'mixed':
+        class_id = 2
+        
+    if self.df.loc[idx, 'classID'] == 'transitions':
+        
+        if self.args.overlap_class == False:
+            class_id = 2
+        else:
+            class_id = 3
 
     aud = AudioUtil.open(audio_file)
     rechan = AudioUtil.rechannel(aud, self.channel)
