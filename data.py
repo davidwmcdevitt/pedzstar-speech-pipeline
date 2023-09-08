@@ -123,7 +123,7 @@ class AudioDataset:
               child_clip = children_mix_audio[child_start_time:child_start_time + clip_duration]
               adult_clip = adult_mix_audio[adult_start_time:adult_start_time + clip_duration]
               
-              if adult_clip.sample_Width != child_clip.sample_width:
+              if adult_clip.sample_width != child_clip.sample_width:
                   adult_clip = adult_clip.set_sample_width(child_clip.sample_width)
               
               #print(child_clip.frame_rate)
