@@ -142,6 +142,12 @@ class AudioDataset:
         
         directories = [self.data_path + 'adults/',self.data_path + 'children/']
         
+        if args.transition_class:
+            directories.append(self.data_path + 'transitions/')
+        
+        if args.overlap_class:
+            directories.append(self.data_path + 'mixed/')
+        
         for directory_path in directories:
         
             for root, dirs, files in os.walk(directory_path):
