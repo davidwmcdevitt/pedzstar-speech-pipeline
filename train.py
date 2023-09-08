@@ -178,7 +178,7 @@ if __name__ == "__main__":
           high_score = acc
           break_count = 0
           print("Saving model")
-          checkpoint_name = data_path + args.model_name + '/' + datetime.now().strftime('%Y-%m-%d') + '.pth'
+          checkpoint_name = args.repo_path + args.model_name + '/' + datetime.now().strftime('%Y-%m-%d') + '.pth'
           torch.save(model.state_dict(), checkpoint_name)
         else:
           break_count += 1
