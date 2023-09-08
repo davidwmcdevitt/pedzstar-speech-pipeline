@@ -130,8 +130,9 @@ class AudioDataset:
                   sample_width=child_clip.sample_width,
                   channels=child_clip.channels
               )
-            
-              overlayed_audio.export('/content/data/mixed/mixed'+str(i)+'.wav', format='wav')
+              
+              output_file = self.data_path + f'mixed/mixed_{i + 1}.wav'
+              overlayed_audio.export(output_file, format='wav')
               
             
         
