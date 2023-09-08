@@ -109,7 +109,7 @@ class AudioDataset:
                   adult_mix_audio += segment
               os.remove(self.data_path + 'adults/' + i)
               
-            for i in range(len(child_ds_len)):
+            for i in range(child_ds_len):
             
               max_start_time = len(children_mix_audio) - clip_duration  # Maximum possible start time
             
