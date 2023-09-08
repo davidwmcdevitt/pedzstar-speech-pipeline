@@ -10,8 +10,9 @@ import random
 
 class AudioDataset:
     
-    def __init__(self, args):
+    def __init__(self, args, num_classes):
         
+        self.num_classes = num_classes
         self.create_dataset(args)
         
     def create_dataset(self, args):
@@ -178,9 +179,8 @@ class AudioDataset:
     
             total_instances = df['classID'].count()
             class_counts = df['classID'].value_counts()
-            num_classes = len(class_counts)
             
-            class_weights = torch.zeros(num_classes, dtype=torch.float32)
+            class_weights = torch.zeros(self.num_classes, dtype=torch.float32)
             
             for i, class_name in enumerate(class_counts.index):
                 instances = class_counts[class_name]

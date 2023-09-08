@@ -33,7 +33,15 @@ if __name__ == "__main__":
     
     args = parser.parse_args()
     
-    dataset = AudioDataset(args)
+    num_classes = 2
+    
+    if args.overlap_class:
+        num_classes +=1
+        
+    if args.transition_class:
+        num_classes +=1
+    
+    dataset = AudioDataset(args, num_classes)
     
     data_path = args.data_path
     checkpoint_name = data_path + args.model_name + '/' + datetime.now().strftime('%Y-%m-%d') + '.pth'
@@ -46,14 +54,6 @@ if __name__ == "__main__":
     
     if args.log_training and not os.path.exists(args.repo_path + args.model_name):
         os.makedirs(args.repo_path + args.model_name + '/log/')
-    
-    num_classes = 2
-    
-    if args.overlap_class:
-        num_classes +=1
-        
-    if args.transition_class:
-        num_classes +=1
         
         
     if args.cnn_model == True and args.w2v_model == False:
