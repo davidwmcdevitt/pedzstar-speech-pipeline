@@ -5,6 +5,8 @@ import torch
 from torch.utils.data import random_split
 from utils import SoundDS
 import numpy as np 
+from pydub.silence import split_on_silence
+import random
 
 class AudioDataset:
     
@@ -36,21 +38,6 @@ class AudioDataset:
             child_dirs = [self.data_path + 'seed_children/', self.data_path + 'darcy_children/']
             
         clip_duration = 1000
-        
-        for directory_path in adult_dirs:
-        
-            for root, dirs, files in os.walk(directory_path):
-                for file_name in files:
-                  if file_name.endswith(".wav"):
-          
-                    audio = AudioSegment.from_wav(directory_path + file_name)
-          
-                    num_increments = len(audio) // clip_duration
-                    increments = [audio[i * clip_duration : (i + 1) * clip_duration] for i in range(num_increments)]
-          
-                    for i, increment in enumerate(increments):
-                      output_file = self.data_path + f'adults/{os.path.splitext(file_name)[0]}_{i + 1}.wav'
-                      increment.export(output_file, format='wav')
                       
         for directory_path in child_dirs:
     
@@ -67,31 +54,114 @@ class AudioDataset:
                     output_file = self.data_path + f'children/{os.path.splitext(file_name)[0]}_{i + 1}.wav'
                     increment.export(output_file, format='wav')
         
+        child_ds_len = len(os.listdir(self.data_path + 'children/'))
+        print(f'Child Obs: {child_ds_len}')
+        
+        for directory_path in adult_dirs:
+            
+            count = 0
+        
+            for root, dirs, files in os.walk(directory_path):
+                for file_name in files:
+                  if file_name.endswith(".wav"):
+          
+                    audio = AudioSegment.from_wav(directory_path + file_name)
+          
+                    num_increments = len(audio) // clip_duration
+                    increments = [audio[i * clip_duration : (i + 1) * clip_duration] for i in range(num_increments)]
+          
+                    for i, increment in enumerate(increments):
+                      output_file = self.data_path + f'adults/{os.path.splitext(file_name)[0]}_{i + 1}.wav'
+                      increment.export(output_file, format='wav')
+                      count +=1
+                      
+                    if directory_path == self.data_path + 'cv_adults/' and count >= child_ds_len:
+                        break
+         
+        if args.overlay_class:
+            
+            child_file_list = os.listdir(self.data_path + 'children/')
+            adult_file_list = os.listdir(self.data_path + 'adults/')
+            
+            children_mix = random.sample(child_file_list, 0.15)
+            
+            adult_mix = random.sample(adult_file_list, 0.15)
+            
+            children_mix_audio = AudioSegment.silent(duration=0)
+            adult_mix_audio = AudioSegment.silent(duration=0)
+                          
+            for i in children_mix:
+                
+                audio = AudioSegment.from_wav(self.data_path + 'children/' + i)
+                segments = split_on_silence(audio, min_silence_len=50, silence_thresh=-30)
+                if len(segments) <= 5 & len(segments)>0:
+                  for segment in segments:
+                    children_mix_audio += segment
+                os.remove(self.data_path + 'children/' + i)
+            
+            
+            for i in adult_mix:
+                
+              audio = AudioSegment.from_wav(self.data_path + 'adult/' + i)
+              segments = split_on_silence(audio, min_silence_len=50, silence_thresh=-30)
+              if len(segments) <= 5 & len(segments)>0:
+                for segment in segments:
+                  adult_mix_audio += segment
+              os.remove(self.data_path + 'adult/' + i)
+              
+            for i in range(len(child_ds_len)):
+            
+              max_start_time = len(children_mix_audio) - clip_duration  # Maximum possible start time
+            
+              child_start_time = random.randint(0, max_start_time)
+            
+              max_start_time = len(adult_mix_audio) - clip_duration  # Maximum possible start time
+            
+              adult_start_time = random.randint(0, max_start_time)
+            
+              child_clip = children_mix_audio[child_start_time:child_start_time + clip_duration]
+              adult_clip = adult_mix_audio[adult_start_time:adult_start_time + clip_duration]
+            
+              overlayed_samples = (np.array(child_clip.get_array_of_samples()) + np.array(adult_clip.get_array_of_samples())) // 2
+            
+              overlayed_audio = AudioSegment(
+                  data=overlayed_samples.tobytes(),
+                  frame_rate=child_clip.frame_rate,
+                  sample_width=child_clip.sample_width,
+                  channels=child_clip.channels
+              )
+            
+              overlayed_audio.export('/content/data/mixed/mixed'+str(i)+'.wav', format='wav')
+              
+            
+        
         relative_paths = []
         classIDs = []
         
         directories = [self.data_path + 'adults/',self.data_path + 'children/']
         
         for directory_path in directories:
-            #print(directory_path)
         
             for root, dirs, files in os.walk(directory_path):
                 for file in files:
                     
-                    #file = os.path.relpath(os.path.join(root, file), start=directory_path)
                     if 'adult' in file:
                         relative_path = 'adults/'+file
                         classID = 'adults'
-                    else:
+                    if 'child' in file:
                         relative_path = 'children/'+file
                         classID = 'children'
-                    
+                    if 'mixed' in file:
+                        relative_path = 'mixed/'+file
+                        classID = 'mixed'
+                    if 'transition' in file:
+                        relative_path = 'transition/'+file
+                        classID = 'transition'
+                        
                     relative_paths.append(relative_path)
                     classIDs.append(classID)
         
         df = pd.DataFrame({'relative_path': relative_paths, 'classID': classIDs})
-        
-        #print(df.head(25))
         
         ds = SoundDS(df, self.data_path)
         
@@ -104,15 +174,20 @@ class AudioDataset:
         self.val_dl = torch.utils.data.DataLoader(val_ds, batch_size=self.batch_size, shuffle=False)
         
         if args.class_weights:
-            
+    
             total_instances = df['classID'].count()
-            adults_instances = df['classID'].value_counts()['adults']
-            children_instances = total_instances - adults_instances
+            class_counts = df['classID'].value_counts()
+            num_classes = len(class_counts)
             
-            weight_adults = adults_instances / (children_instances + adults_instances)
-            weight_children = children_instances / (children_instances + adults_instances)
+            class_weights = torch.zeros(num_classes, dtype=torch.float32)
             
-            self.class_weights = torch.tensor([weight_adults, weight_children], dtype=torch.float32)
+            for i, class_name in enumerate(class_counts.index):
+                instances = class_counts[class_name]
+                weight = instances / total_instances
+                class_weights[i] = weight
+            
+            self.class_weights = class_weights
+            print(class_weights)
     
     
       

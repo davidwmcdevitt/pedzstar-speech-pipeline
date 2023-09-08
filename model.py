@@ -3,7 +3,8 @@ import torch.nn.init as init
 import torch.nn.functional as F
 
 class AudioClassifier(nn.Module):
-    def __init__(self):
+    
+    def __init__(self, num_classes):
         super().__init__()
         conv_layers = []
         
@@ -29,7 +30,7 @@ class AudioClassifier(nn.Module):
         self.drop1 = nn.Dropout(0.1)
         self.lin2 = nn.Linear(in_features=128, out_features=32)
         self.drop2 = nn.Dropout(0.1)
-        self.lin3 = nn.Linear(in_features=32, out_features=2)
+        self.lin3 = nn.Linear(in_features=32, out_features=num_classes)
 
         self.lin = nn.Sequential(*[self.lin1, self.drop1, self.lin2, self.drop2, self.lin3])
         
@@ -46,3 +47,5 @@ class AudioClassifier(nn.Module):
         x = self.lin(x)
         
         return F.softmax(x, dim=1)
+    
+    

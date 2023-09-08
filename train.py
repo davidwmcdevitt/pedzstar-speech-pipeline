@@ -8,6 +8,7 @@ from data import AudioDataset
 from IPython.display import clear_output
 import os
 from datetime import datetime
+import numpy as np
 
 if __name__ == "__main__":
     
@@ -16,7 +17,9 @@ if __name__ == "__main__":
     parser.add_argument('--repo_path', type=str, required=True, help='Path to GitHub repo')
     parser.add_argument('--data_path', type=str, required=True, help='Path to training data')
     parser.add_argument('--model_name', type=str, required=True, help='Model Name')
-    parser.add_argument('--seed_only', action='store_true', help='Designates experiment input as SEED data only ')
+    parser.add_argument('--seed_only', action='store_true', help='Designates experiment input as SEED data only')
+    parser.add_argument('--cnn_model', action='store_true', default=True, help='Designates CNN architecture')
+    parser.add_argument('--w2v_model', action='store_true', default=False, help='Designates W2V architecture')
     parser.add_argument('--num_epochs', type=int, default=999, help='Number of training epochs')
     parser.add_argument('--train_split', type=float, default=0.9, help='Train split percentage')
     parser.add_argument('--break_count', type=int, default=20, help='Maximum number of epochs without learning')
@@ -41,12 +44,31 @@ if __name__ == "__main__":
     
     assert os.path.exists(args.repo_path + args.model_name)
     
+    if args.log_training:
+        os.makedirs(args.repo_path + args.model_name + 'log/')
     
-    model = AudioClassifier()
+    num_classes = 2
+    
+    if args.overlap_class:
+        num_classes +=1
+        
+    if args.transition_class:
+        num_classes +=1
+        
+        
+    if args.cnn_model == True and args.w2v_model == False:
+        model = AudioClassifier(num_classes)
+        
+    if args.cnn_model == False and args.w2v_model == True:
+        pass
+        
+    if args.cnn_model == True and args.w2v_model == True:
+        pass
+        
+        
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     model = model.to(device)
     next(model.parameters()).device
-    print("here here")
     
     if args.class_weights:
         criterion = nn.CrossEntropyLoss(weight=dataset.class_weights)
@@ -60,6 +82,14 @@ if __name__ == "__main__":
                                                   anneal_strategy='linear')
     high_score = 0
     break_count = 0
+    
+    
+    if args.log_training:
+        train_loss = []
+        train_acc = []
+        train_epoch_time =[]
+        val_acc = []
+        val_f1_score = []
     
     for epoch in range(args.num_epochs):
         
@@ -99,6 +129,11 @@ if __name__ == "__main__":
         avg_loss = running_loss / num_batches
         acc = correct_prediction/total_prediction
         
+        if args.log_training:
+            train_loss.append(avg_loss)
+            train_acc.append(acc)
+            train_epoch_time.append(epoch_time)
+        
         print(f'Epoch: {epoch}, Loss: {avg_loss:.2f}, Accuracy: {acc:.2f}, Time: {epoch_time:.2f} seconds')
     
         print("-"*80)
@@ -136,19 +171,27 @@ if __name__ == "__main__":
         print(confusion)
         
         if args.log_training:
-            #log training
-            pass
+            val_acc.append(avg_loss)
+            val_f1_score.append(f1)
     
         if acc > high_score:
           high_score = acc
           break_count = 0
           print("Saving model")
           checkpoint_name = data_path + args.model_name + '/' + datetime.now().strftime('%Y-%m-%d') + '.pth'
-          torch.save(model.state_dict(), '/content/drive/MyDrive/PEDZSTAR/exp_full_2class_08292023.pth')
+          torch.save(model.state_dict(), checkpoint_name)
         else:
           break_count += 1
           if break_count > args.break_count:
             break
     
+    if args.log_training:
+        print(f'Saving Logs at {args.repo_path + args.model_name}log/')
+        np.save(args.repo_path + args.model_name + 'log/train_loss.npy', train_loss)
+        np.save(args.repo_path + args.model_name + 'log/train_acc.npy', train_acc)
+        np.save(args.repo_path + args.model_name + 'log/train_epoch_time.npy', train_epoch_time)
+        np.save(args.repo_path + args.model_name + 'log/val_acc.npy', val_acc)
+        np.save(args.repo_path + args.model_name + 'log/val_f1_score.npy', val_f1_score)
+        
     print('Finished Training')
     
