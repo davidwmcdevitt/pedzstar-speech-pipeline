@@ -83,9 +83,9 @@ class AudioDataset:
             child_file_list = os.listdir(self.data_path + 'children/')
             adult_file_list = os.listdir(self.data_path + 'adults/')
             
-            children_mix = random.sample(child_file_list, np.ceil(len(child_file_list)*0.15))
+            children_mix = random.sample(child_file_list, int(np.ceil(len(child_file_list)*0.15)))
             
-            adult_mix = random.sample(adult_file_list, np.ceil(len(adult_file_list)*0.15))
+            adult_mix = random.sample(adult_file_list, int(np.ceil(len(adult_file_list)*0.15)))
             
             children_mix_audio = AudioSegment.silent(duration=0)
             adult_mix_audio = AudioSegment.silent(duration=0)
