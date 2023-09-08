@@ -123,17 +123,20 @@ class AudioDataset:
               child_clip = children_mix_audio[child_start_time:child_start_time + clip_duration]
               adult_clip = adult_mix_audio[adult_start_time:adult_start_time + clip_duration]
               
-              print(child_clip.frame_rate)
+              if adult_clip.sample_Width != child_clip.sample_width:
+                  adult_clip = adult_clip.set_sample_width(child_clip.sample_width)
               
-              print(adult_clip.frame_rate)
+              #print(child_clip.frame_rate)
               
-              print(child_clip.sample_width)
+              #print(adult_clip.frame_rate)
               
-              print(adult_clip.sample_width)
+              #print(child_clip.sample_width)
               
-              print(child_clip.channels)
+              #print(adult_clip.sample_width)
               
-              print(adult_clip.channels)
+              #print(child_clip.channels)
+              
+              #print(adult_clip.channels)
             
               overlayed_samples = (np.array(child_clip.get_array_of_samples()) + np.array(adult_clip.get_array_of_samples())) // 2
             
