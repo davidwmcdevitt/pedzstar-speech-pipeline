@@ -102,12 +102,12 @@ class AudioDataset:
             
             for i in adult_mix:
                 
-              audio = AudioSegment.from_wav(self.data_path + 'adult/' + i)
+              audio = AudioSegment.from_wav(self.data_path + 'adults/' + i)
               segments = split_on_silence(audio, min_silence_len=50, silence_thresh=-30)
               if len(segments) <= 5 & len(segments)>0:
                 for segment in segments:
                   adult_mix_audio += segment
-              os.remove(self.data_path + 'adult/' + i)
+              os.remove(self.data_path + 'adults/' + i)
               
             for i in range(len(child_ds_len)):
             
