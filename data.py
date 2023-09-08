@@ -78,7 +78,7 @@ class AudioDataset:
                     if directory_path == self.data_path + 'cv_adults/' and count >= child_ds_len:
                         break
          
-        if args.overlay_class:
+        if args.overlap_class:
             
             child_file_list = os.listdir(self.data_path + 'children/')
             adult_file_list = os.listdir(self.data_path + 'adults/')
