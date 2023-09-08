@@ -112,16 +112,28 @@ class AudioDataset:
               
             for i in range(child_ds_len):
             
-              max_start_time = len(children_mix_audio) - clip_duration  # Maximum possible start time
+              max_start_time = len(children_mix_audio) - clip_duration
             
               child_start_time = random.randint(0, max_start_time)
             
-              max_start_time = len(adult_mix_audio) - clip_duration  # Maximum possible start time
+              max_start_time = len(adult_mix_audio) - clip_duration
             
               adult_start_time = random.randint(0, max_start_time)
             
               child_clip = children_mix_audio[child_start_time:child_start_time + clip_duration]
               adult_clip = adult_mix_audio[adult_start_time:adult_start_time + clip_duration]
+              
+              print(child_clip.frame_rate)
+              
+              print(adult_clip.frame_rate)
+              
+              print(child_clip.sample_width)
+              
+              print(adult_clip.sample_width)
+              
+              print(child_clip.channels)
+              
+              print(adult_clip.channels)
             
               overlayed_samples = (np.array(child_clip.get_array_of_samples()) + np.array(adult_clip.get_array_of_samples())) // 2
             
