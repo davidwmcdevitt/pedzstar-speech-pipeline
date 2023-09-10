@@ -245,8 +245,12 @@ class AudioDataset:
                 instances = class_counts[class_name]
                 weight = total_instances / (instances * self.num_classes)
                 class_weights[i] = weight
+                
+            total_sum = torch.sum(class_weights)
             
-            self.class_weights = class_weights
+            normalized_tensor = class_weights / total_sum
+            
+            self.class_weights = normalized_tensor
             print(class_weights)
     
     
