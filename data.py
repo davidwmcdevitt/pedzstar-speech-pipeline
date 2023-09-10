@@ -162,7 +162,7 @@ class AudioDataset:
                 if adult_clip.sample_width != child_clip.sample_width:
                     adult_clip = adult_clip.set_sample_width(child_clip.sample_width)
                     
-                cushion = random.randint(10,200) * 2
+                cushion = random.randint(10,100) * 2
                 
                 speaker_time = int((1000 - cushion) / 2)
                 
@@ -251,7 +251,7 @@ class AudioDataset:
             normalized_tensor = class_weights / total_sum
             
             self.class_weights = normalized_tensor
-            print(class_weights)
+            print(normalized_tensor)
     
     
       
