@@ -150,6 +150,47 @@ class AudioDataset:
               output_file = self.data_path + f'mixed/mixed_{i + 1}.wav'
               overlayed_audio.export(output_file, format='wav')
               
+        if args.transition_class:
+            
+            child_file_list = os.listdir(self.data_path + 'children/')
+            adult_file_list = os.listdir(self.data_path + 'adults/')
+            
+            children_trans = random.sample(child_file_list, int(np.ceil(len(child_file_list)*0.10)))
+            
+            adult_trans = random.sample(adult_file_list, len(children_trans))
+            
+            count = 0
+            
+            for child_file, adult_file in zip(children_trans, adult_trans):
+                
+                child_clip = AudioSegment.from_wav(self.data_path + 'children/' + child_file)
+                    
+                adult_clip = AudioSegment.from_wav(self.data_path + 'adults/' + adult_file)
+                
+                if adult_clip.sample_width != child_clip.sample_width:
+                    adult_clip = adult_clip.set_sample_width(child_clip.sample_width)
+                    
+                cushion = random.randint(10,200) * 2
+                
+                speaker_time = int((1000 - cushion) / 2)
+                
+                empty_space = AudioSegment.silent(duration=cushion)
+                
+                if random.randint(0,1) == 0:
+                    
+                    transition_audio = child_clip[0:speaker_time] + empty_space + adult_clip[0:speaker_time]
+                    
+                else:
+                    
+                    transition_audio = adult_clip[0:speaker_time] + empty_space + child_clip[0:speaker_time]
+                    
+                assert len(transition_audio) == 1000
+                
+                output_file = self.data_path + f'transitions/transition_{count + 1}.wav'
+                
+                count += 1
+                
+                transition_audio.export(output_file, format='wav')
             
         
         relative_paths = []
@@ -178,7 +219,7 @@ class AudioDataset:
                         relative_path = 'mixed/'+file
                         classID = 'mixed'
                     if 'transition' in file:
-                        relative_path = 'transition/'+file
+                        relative_path = 'transitions/'+file
                         classID = 'transition'
                         
                     relative_paths.append(relative_path)
