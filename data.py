@@ -84,9 +84,9 @@ class AudioDataset:
             child_file_list = os.listdir(self.data_path + 'children/')
             adult_file_list = os.listdir(self.data_path + 'adults/')
             
-            children_mix = random.sample(child_file_list, int(np.ceil(len(child_file_list)*0.15)))
+            children_mix = random.sample(child_file_list, int(np.ceil(len(child_file_list)*0.10)))
             
-            adult_mix = random.sample(adult_file_list, int(np.ceil(len(adult_file_list)*0.15)))
+            adult_mix = random.sample(adult_file_list, int(np.ceil(len(adult_file_list)*0.10)))
             
             children_mix_audio = AudioSegment.silent(duration=0)
             adult_mix_audio = AudioSegment.silent(duration=0)
@@ -110,7 +110,7 @@ class AudioDataset:
                   adult_mix_audio += segment
               os.remove(self.data_path + 'adults/' + i)
               
-            for i in range(child_ds_len):
+            for i in range(int(np.ceil(child_ds_len *0.85))):
             
               max_start_time = len(children_mix_audio) - clip_duration
             
@@ -125,18 +125,6 @@ class AudioDataset:
               
               if adult_clip.sample_width != child_clip.sample_width:
                   adult_clip = adult_clip.set_sample_width(child_clip.sample_width)
-              
-              #print(child_clip.frame_rate)
-              
-              #print(adult_clip.frame_rate)
-              
-              #print(child_clip.sample_width)
-              
-              #print(adult_clip.sample_width)
-              
-              #print(child_clip.channels)
-              
-              #print(adult_clip.channels)
             
               overlayed_samples = (np.array(child_clip.get_array_of_samples()) + np.array(adult_clip.get_array_of_samples())) // 2
             
@@ -157,11 +145,15 @@ class AudioDataset:
             
             children_trans = random.sample(child_file_list, int(np.ceil(len(child_file_list)*0.10)))
             
-            adult_trans = random.sample(adult_file_list, len(children_trans))
+            adult_trans = random.sample(adult_file_list, int(np.ceil(len(adult_file_list)*0.10)))
             
             count = 0
-            
-            for child_file, adult_file in zip(children_trans, adult_trans):
+              
+            for i in range(int(np.ceil(child_ds_len * 0.85))):
+                
+                child_file = random.choice(children_trans)
+                    
+                adult_file = random.choice(adult_trans)
                 
                 child_clip = AudioSegment.from_wav(self.data_path + 'children/' + child_file)
                     
@@ -191,6 +183,12 @@ class AudioDataset:
                 count += 1
                 
                 transition_audio.export(output_file, format='wav')
+                
+            for child_file in children_trans:
+                os.remove(self.data_path + 'children/' + child_file)
+                
+            for adult_file in adult_trans:
+                os.remove(self.data_path + 'adults/' + adult_file)
             
         
         relative_paths = []
