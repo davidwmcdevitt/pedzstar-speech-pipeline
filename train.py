@@ -43,6 +43,8 @@ if __name__ == "__main__":
     
     dataset = AudioDataset(args, num_classes)
     
+    print(num_classes)
+    
     data_path = args.data_path
     checkpoint_name = data_path + args.model_name + '/' + datetime.now().strftime('%Y-%m-%d') + '.pth'
     print(checkpoint_name)
