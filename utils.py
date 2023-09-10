@@ -91,7 +91,7 @@ class SoundDS(Dataset):
     if self.df.loc[idx, 'classID'] == 'mixed':
         class_id = 2
         
-    if self.df.loc[idx, 'classID'] == 'transitions':
+    if self.df.loc[idx, 'classID'] == 'transition':
         
         if self.args.overlap_class == False:
             class_id = 2
