@@ -236,7 +236,6 @@ class AudioDataset:
         self.val_dl = torch.utils.data.DataLoader(val_ds, batch_size=self.batch_size, shuffle=False)
         
         if args.class_weights:
-    
             total_instances = df['classID'].count()
             class_counts = df['classID'].value_counts()
             
@@ -244,7 +243,7 @@ class AudioDataset:
             
             for i, class_name in enumerate(class_counts.index):
                 instances = class_counts[class_name]
-                weight = instances / total_instances
+                weight = total_instances / (instances * self.num_classes)
                 class_weights[i] = weight
             
             self.class_weights = class_weights
