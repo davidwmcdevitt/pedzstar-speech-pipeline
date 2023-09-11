@@ -54,7 +54,7 @@ if __name__ == "__main__":
     
     assert os.path.exists(args.repo_path + args.model_name)
     
-    if args.log_training and not os.path.exists(args.repo_path + args.model_name):
+    if args.log_training and not os.path.exists(args.repo_path + args.model_name + '/log/'):
         os.makedirs(args.repo_path + args.model_name + '/log/')
         
         
