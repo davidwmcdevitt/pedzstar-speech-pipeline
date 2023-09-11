@@ -76,7 +76,7 @@ class AudioDataset:
                       increment.export(output_file, format='wav')
                       count +=1
                       
-                    if directory_path == self.data_path + 'cv_adults/' and count >= child_ds_len:
+                    if directory_path == self.data_path + 'cv_adults/' and count >= child_ds_len * 1.25:
                         break
          
         if args.overlap_class:
