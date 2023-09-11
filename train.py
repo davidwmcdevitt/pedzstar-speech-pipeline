@@ -185,11 +185,11 @@ if __name__ == "__main__":
           
           if args.log_training:
               print(f'Saving Logs at {args.repo_path + args.model_name}log/')
-              np.save(args.repo_path + args.model_name + 'log/train_loss.npy', train_loss)
-              np.save(args.repo_path + args.model_name + 'log/train_acc.npy', train_acc)
-              np.save(args.repo_path + args.model_name + 'log/train_epoch_time.npy', train_epoch_time)
-              np.save(args.repo_path + args.model_name + 'log/val_acc.npy', val_acc)
-              np.save(args.repo_path + args.model_name + 'log/val_f1_score.npy', val_f1_score)
+              np.save(args.repo_path + args.model_name + '/log/train_loss.npy', train_loss)
+              np.save(args.repo_path + args.model_name + '/log/train_acc.npy', train_acc)
+              np.save(args.repo_path + args.model_name + '/log/train_epoch_time.npy', train_epoch_time)
+              np.save(args.repo_path + args.model_name + '/log/val_acc.npy', val_acc)
+              np.save(args.repo_path + args.model_name + '/log/val_f1_score.npy', val_f1_score)
               
         else:
           break_count += 1
