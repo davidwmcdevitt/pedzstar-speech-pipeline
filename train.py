@@ -47,7 +47,7 @@ if __name__ == "__main__":
     
     data_path = args.data_path
     if args.continue_train:
-        checkpoint_path = data_path + 'models/' + args.model_name + '/' + args.checkpoint_name + '.pth'
+        checkpoint_path = args.repo_path + 'models/' + args.model_name + '/' + args.checkpoint_name + '.pth'
     else:
         checkpoint_path = data_path + '/models/' + args.model_name + '/' + datetime.now().strftime('%Y-%m-%d') + '.pth'
     
