@@ -111,7 +111,8 @@ if __name__ == "__main__":
     
     for epoch in range(args.num_epochs):
         
-        epoch = epoch_pickup
+        if args.continue_train:
+            epoch = epoch + epoch_pickup
         
         running_loss = 0.0
         correct_prediction = 0
