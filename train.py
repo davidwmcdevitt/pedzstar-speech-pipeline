@@ -30,6 +30,7 @@ if __name__ == "__main__":
     parser.add_argument('--transition_class', action='store_true', help='Add transition class')
     parser.add_argument('--class_weights', action='store_true', help='Optimize with class weights')
     parser.add_argument('--log_training', action='store_true', help='Log training accuracy and loss')
+    parser.add_argument('--checkpoint_path', type=str, help='Log training accuracy and loss')
     
     args = parser.parse_args()
     
@@ -193,6 +194,7 @@ if __name__ == "__main__":
               
         else:
           break_count += 1
+          print(f"Break Count: {break_count}")
           if break_count > args.break_count:
             break
         
