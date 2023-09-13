@@ -13,7 +13,11 @@ class AudioDataset:
     def __init__(self, args, num_classes):
         
         self.num_classes = num_classes
-        self.create_dataset(args)
+        if args.continue_train:
+            self.load_dataset(args)
+            pass
+        else:
+            self.create_dataset(args)
         
     def create_dataset(self, args):
         
@@ -190,6 +194,85 @@ class AudioDataset:
             for adult_file in adult_trans:
                 os.remove(self.data_path + 'adults/' + adult_file)
             
+        
+        relative_paths = []
+        classIDs = []
+        
+        directories = [self.data_path + 'adults/',self.data_path + 'children/']
+        
+        if args.transition_class:
+            directories.append(self.data_path + 'transitions/')
+        
+        if args.overlap_class:
+            directories.append(self.data_path + 'mixed/')
+        
+        for directory_path in directories:
+        
+            for root, dirs, files in os.walk(directory_path):
+                for file in files:
+                    
+                    if 'adult' in file:
+                        relative_path = 'adults/'+file
+                        classID = 'adults'
+                    if 'child' in file:
+                        relative_path = 'children/'+file
+                        classID = 'children'
+                    if 'mixed' in file:
+                        relative_path = 'mixed/'+file
+                        classID = 'mixed'
+                    if 'transition' in file:
+                        relative_path = 'transitions/'+file
+                        classID = 'transition'
+                        
+                    relative_paths.append(relative_path)
+                    classIDs.append(classID)
+        
+        df = pd.DataFrame({'relative_path': relative_paths, 'classID': classIDs})
+        
+        ds = SoundDS(df, self.data_path, args)
+        
+        num_items = len(ds)
+        num_train = round(num_items * self.train_split)
+        num_val = num_items - num_train
+        train_ds, val_ds = random_split(ds, [num_train, num_val])
+        
+        self.train_dl = torch.utils.data.DataLoader(train_ds, batch_size=self.batch_size, shuffle=True)
+        self.val_dl = torch.utils.data.DataLoader(val_ds, batch_size=self.batch_size, shuffle=False)
+        
+        if args.class_weights:
+            total_instances = df['classID'].count()
+            class_counts = df['classID'].value_counts()
+            
+            class_weights = torch.zeros(self.num_classes, dtype=torch.float32)
+            
+            for i, class_name in enumerate(class_counts.index):
+                instances = class_counts[class_name]
+                weight = total_instances / (instances * self.num_classes)
+                class_weights[i] = weight
+                
+            total_sum = torch.sum(class_weights)
+            
+            normalized_tensor = class_weights / total_sum
+            
+            self.class_weights = normalized_tensor
+            print(normalized_tensor)
+            
+        
+    def load_dataset(self, args):
+        
+        self.data_path = args.data_path
+        self.repo_path = args.repo_path
+        self.seed_only = args.seed_only
+        self.num_epochs = args.num_epochs
+        self.train_split = args.train_split
+        self.break_count = args.break_count
+        self.batch_size = args.batch_size
+        self.clip_size = args.clip_size
+        self.noise_level = args.noise_level
+        self.overlap_class = args.overlap_class
+        self.transition_class = args.transition_class
+        
+        print(f"Loading datasets from {self.data_path}")
         
         relative_paths = []
         classIDs = []

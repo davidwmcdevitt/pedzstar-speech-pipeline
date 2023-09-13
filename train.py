@@ -30,7 +30,8 @@ if __name__ == "__main__":
     parser.add_argument('--transition_class', action='store_true', help='Add transition class')
     parser.add_argument('--class_weights', action='store_true', help='Optimize with class weights')
     parser.add_argument('--log_training', action='store_true', help='Log training accuracy and loss')
-    parser.add_argument('--checkpoint_path', type=str, help='Log training accuracy and loss')
+    parser.add_argument('--continue_train', action='store_true', help='Log training accuracy and loss')
+    parser.add_argument('--checkpoint_name', type=str, help='Name of model checkpoint')
     
     args = parser.parse_args()
     
@@ -44,19 +45,20 @@ if __name__ == "__main__":
     
     dataset = AudioDataset(args, num_classes)
     
-    print(num_classes)
-    
     data_path = args.data_path
-    checkpoint_name = data_path + args.model_name + '/' + datetime.now().strftime('%Y-%m-%d') + '.pth'
-    print(checkpoint_name)
+    if args.continue_train:
+        checkpoint_path = data_path + '/models/' + args.model_name + '/' + args.checkpoint_name + '.pth'
+    else:
+        checkpoint_path = data_path + '/models/' + args.model_name + '/' + datetime.now().strftime('%Y-%m-%d') + '.pth'
     
-    if not os.path.exists(args.repo_path + args.model_name):
-        os.makedirs(args.repo_path + args.model_name)
     
-    assert os.path.exists(args.repo_path + args.model_name)
+    if not os.path.exists(args.repo_path + '/models/' + args.model_name ):
+        os.makedirs(args.repo_path + '/models/' + args.model_name)
     
-    if args.log_training and not os.path.exists(args.repo_path + args.model_name + '/log/'):
-        os.makedirs(args.repo_path + args.model_name + '/log/')
+    assert os.path.exists(args.repo_path + '/models/' + args.model_name)
+    
+    if args.log_training and not os.path.exists(args.repo_path  + '/models/' + args.model_name + '/log/'):
+        os.makedirs(args.repo_path  + '/models/' + args.model_name + '/log/')
         
         
     if args.cnn_model == True and args.w2v_model == False:
@@ -68,6 +70,10 @@ if __name__ == "__main__":
     if args.cnn_model == True and args.w2v_model == True:
         pass
         
+    if args.continue_train:
+        
+        checkpoint = torch.load(checkpoint_path)
+        model.load_state_dict(checkpoint['model_state_dict'])
         
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     model = model.to(device)
@@ -88,13 +94,24 @@ if __name__ == "__main__":
     
     
     if args.log_training:
-        train_loss = []
-        train_acc = []
-        train_epoch_time =[]
-        val_acc = []
-        val_f1_score = []
+        if args.continue_train:
+            train_loss = np.load(args.repo_path  + '/models/' + args.model_name + '/log/train_loss.npy')
+            train_acc = np.load(args.repo_path  + '/models/' + args.model_name + '/log/train_acc.npy')
+            train_epoch_time = np.load(args.repo_path  + '/models/' + args.model_name + '/log/train_epoch_time.npy')
+            val_acc = np.load(args.repo_path  + '/models/' + args.model_name + '/log/val_acc.npy')
+            val_f1_score = np.load(args.repo_path  + '/models/' + args.model_name + '/log/val_f1_score.npy')
+            
+            epoch_pickup = len(train_loss)
+        else:
+            train_loss = []
+            train_acc = []
+            train_epoch_time =[]
+            val_acc = []
+            val_f1_score = []
     
     for epoch in range(args.num_epochs):
+        
+        epoch = epoch_pickup
         
         running_loss = 0.0
         correct_prediction = 0
@@ -177,20 +194,20 @@ if __name__ == "__main__":
             val_acc.append(avg_loss)
             val_f1_score.append(f1)
     
-        if acc > high_score:
+        if acc > high_score * 1.01:
           high_score = acc
           break_count = 0
           print("Saving model")
-          checkpoint_name = args.repo_path + args.model_name + '/' + datetime.now().strftime('%Y-%m-%d') + '.pth'
+          checkpoint_name = args.repo_path + '/models/' + args.model_name + '/' + datetime.now().strftime('%Y-%m-%d') + '.pth'
           torch.save(model.state_dict(), checkpoint_name)
           
           if args.log_training:
-              print(f'Saving Logs at {args.repo_path + args.model_name}log/')
-              np.save(args.repo_path + args.model_name + '/log/train_loss.npy', train_loss)
-              np.save(args.repo_path + args.model_name + '/log/train_acc.npy', train_acc)
-              np.save(args.repo_path + args.model_name + '/log/train_epoch_time.npy', train_epoch_time)
-              np.save(args.repo_path + args.model_name + '/log/val_acc.npy', val_acc)
-              np.save(args.repo_path + args.model_name + '/log/val_f1_score.npy', val_f1_score)
+              print(f'Saving Logs at {args.repo_path + args.model_name}/log/')
+              np.save(args.repo_path  + '/models/' + args.model_name + '/log/train_loss.npy', train_loss)
+              np.save(args.repo_path  + '/models/' + args.model_name + '/log/train_acc.npy', train_acc)
+              np.save(args.repo_path  + '/models/' + args.model_name + '/log/train_epoch_time.npy', train_epoch_time)
+              np.save(args.repo_path  + '/models/' + args.model_name + '/log/val_acc.npy', val_acc)
+              np.save(args.repo_path  + '/models/' + args.model_name + '/log/val_f1_score.npy', val_f1_score)
               
         else:
           break_count += 1
