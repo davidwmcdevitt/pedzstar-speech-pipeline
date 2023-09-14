@@ -95,11 +95,11 @@ if __name__ == "__main__":
     
     if args.log_training:
         if args.continue_train:
-            train_loss = np.load(args.repo_path  + '/models/' + args.model_name + '/log/train_loss.npy')
-            train_acc = np.load(args.repo_path  + '/models/' + args.model_name + '/log/train_acc.npy')
-            train_epoch_time = np.load(args.repo_path  + '/models/' + args.model_name + '/log/train_epoch_time.npy')
-            val_acc = np.load(args.repo_path  + '/models/' + args.model_name + '/log/val_acc.npy')
-            val_f1_score = np.load(args.repo_path  + '/models/' + args.model_name + '/log/val_f1_score.npy')
+            train_loss = np.load(args.repo_path  + '/models/' + args.model_name + '/log/train_loss.npy').tolist()
+            train_acc = np.load(args.repo_path  + '/models/' + args.model_name + '/log/train_acc.npy').tolist()
+            train_epoch_time = np.load(args.repo_path  + '/models/' + args.model_name + '/log/train_epoch_time.npy').tolist()
+            val_acc = np.load(args.repo_path  + '/models/' + args.model_name + '/log/val_acc.npy').tolist()
+            val_f1_score = np.load(args.repo_path  + '/models/' + args.model_name + '/log/val_f1_score.npy').tolist()
             
             epoch_pickup = len(train_loss)
         else:
