@@ -73,6 +73,7 @@ if __name__ == "__main__":
     if args.continue_train:
         
         checkpoint = torch.load(checkpoint_path)
+        print(checkpoint.keys())
         model.load_state_dict(checkpoint['model_state_dict'])
         
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
