@@ -4,7 +4,14 @@
 
 ### Setup
 
+`!git clone https://github.com/davidwmcdevitt/pedzstar-speech-pipeline`
 `!pip install -r requirements.txt`
+
+### Preparing Data Directories
+
+Experiments are initialized from the raw audio files of the Speech Exemplars and Evaluation Database (SEED). Access to the SEED dataset can be requested at (https://pedzstarlab.soc.northwestern.edu/) 
+
+###
 
 ## Background
 
