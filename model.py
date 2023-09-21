@@ -42,6 +42,7 @@ class AudioClassifier(nn.Module):
         x = self.conv(x)
         
         x = self.ap(x)
+        
         x = x.view(x.shape[0], -1)
         
         x = self.lin(x)

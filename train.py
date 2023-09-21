@@ -192,10 +192,10 @@ if __name__ == "__main__":
         print(confusion)
         
         if args.log_training:
-            val_acc.append(avg_loss)
+            val_acc.append(acc)
             val_f1_score.append(f1)
     
-        if acc > high_score * 1.01:
+        if acc > high_score * 1.005:
           high_score = acc
           break_count = 0
           print("Saving model")
