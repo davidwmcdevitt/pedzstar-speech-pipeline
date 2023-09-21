@@ -2,6 +2,9 @@
 
 ## Replicating Experiments
 
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1v1tH1Id0nGN1n_NwzlH47L4zIeXVdBPW?usp=sharing)
+
+
 ### Setup
 
 `!git clone https://github.com/davidwmcdevitt/pedzstar-speech-pipeline`
@@ -53,10 +56,6 @@ Experiment replication can be initialized with the following command
 
 4-Class
 `!python train.py --repo_path [destination of git clone] ./experiments/[experiment_name]/data --model_name [experiment_name] --num_epochs 999 --train_split 0.9 --break_count 15 --batch_size 16 --clip_size 1 --noise_level 0.2 --class_weights --log_training --seed_only --overlap_class --transition_class`
-
-
-
-[Colab Notebook](https://colab.research.google.com/drive/1h2cI0ZgMKTKJruuP5C0MTyZvbF2gvvCz).
 
 
 ###
