@@ -81,7 +81,12 @@ For this study, we use the Speech Exemplars and Evaluation Database (SEED), whic
 ## Citations
 
 [^1^]: [M. Speights et al., "Automated episode selection of child continuous speech via blind source extraction," in J. Acoust. Soc. Am.](https://doi.org/10.1121/1.5068583)  
+
 [^2^]: [A. Radford et al., "Robust Speech Recognition via Large-Scale Weak Supervision,"](https://doi.org/10.48550/arXiv.2212.04356)  
+
 [^3^]: [L. Nanni et al., "An Ensemble of Convolutional Neural Networks for Audio Classification," Applied Sciences](https://doi.org/10.48550/arXiv.2007.07966)  
+
 [^4^]: [K. J. Piczak, "Environmental sound classification with convolutional neural networks," 2015 IEEE 25th International Workshop on Machine Learning for Signal Processing](https://ieeexplore.ieee.org/document/7324337)  
+
 [^5^]: [Speights Atkins et al., Speech exemplar and evaluation database (SEED) for clinical training in articulatory phonetics and speech science](https://osf.io/ygc8n/?view_only=e5a044f04c8a435aaa808efbfd3297e6)  
+
