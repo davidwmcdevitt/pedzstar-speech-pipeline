@@ -40,21 +40,25 @@ Unzip data folders to the following directories:
 Experiment replication can be initialized with the following command
 
 2-Class
+
 `!python train.py --repo_path [destination of git clone] ./experiments/[experiment_name]/data --model_name [experiment_name] --num_epochs 999 --train_split 0.9 --break_count 15 --batch_size 16 --clip_size 1 --noise_level 0.2 --class_weights --log_training --seed_only`
 
 
 
 3-Class (Overlap)
+
 `!python train.py --repo_path [destination of git clone] ./experiments/[experiment_name]/data --model_name [experiment_name] --num_epochs 999 --train_split 0.9 --break_count 15 --batch_size 16 --clip_size 1 --noise_level 0.2 --class_weights --log_training --seed_only --overlap_class`
 
 
 
 3-Class (Transition)
+
 `!python train.py --repo_path [destination of git clone] ./experiments/[experiment_name]/data --model_name [experiment_name] --num_epochs 999 --train_split 0.9 --break_count 15 --batch_size 16 --clip_size 1 --noise_level 0.2 --class_weights --log_training --seed_only --transition_class`
 
 
 
 4-Class
+
 `!python train.py --repo_path [destination of git clone] ./experiments/[experiment_name]/data --model_name [experiment_name] --num_epochs 999 --train_split 0.9 --break_count 15 --batch_size 16 --clip_size 1 --noise_level 0.2 --class_weights --log_training --seed_only --overlap_class --transition_class`
 
 
