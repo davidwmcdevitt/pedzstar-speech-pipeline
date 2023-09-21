@@ -5,11 +5,47 @@
 ### Setup
 
 `!git clone https://github.com/davidwmcdevitt/pedzstar-speech-pipeline`
+
 `!pip install -r requirements.txt`
 
 ### Preparing Data Directories
 
-Experiments are initialized from the raw audio files of the Speech Exemplars and Evaluation Database (SEED). Access to the SEED dataset can be requested at (https://pedzstarlab.soc.northwestern.edu/) 
+Experiments are initialized from the raw audio files of the Speech Exemplars and Evaluation Database (SEED). Access to the SEED dataset can be requested at https://pedzstarlab.soc.northwestern.edu/
+
+The pipeline searches for directories in the following format:
+
+`!mkdir ./experiments/
+!mkdir ./experiments/[experiment_name]
+!mkdir ./experiments/[experiment_name]/data
+!mkdir ./experiments/[experiment_name]/data/children
+!mkdir ./experiments/[experiment_name]/data/adults
+!mkdir ./experiments/[experiment_name]/data/mixed
+!mkdir ./experiments/[experiment_name]/data/transitions`
+
+Unzip data folders to the following directories:
+
+`!unzip -o /content/drive/MyDrive/PEDZSTAR/input_files/seed_children.zip -d ./experiments/[experiment_name]/data
+!unzip -o /content/drive/MyDrive/PEDZSTAR/input_files/seed_adults.zip -d ./experiments/[experiment_name]/data`
+
+Experiment replication can be initialized with the following command
+
+2-Class
+`!python train.py --repo_path [destination of git clone] ./experiments/[experiment_name]/data --model_name [experiment_name] --num_epochs 999 --train_split 0.9 --break_count 15 --batch_size 16 --clip_size 1 --noise_level 0.2 --class_weights --log_training --seed_only`
+
+
+3-Class (Overlap)
+`!python train.py --repo_path [destination of git clone] ./experiments/[experiment_name]/data --model_name [experiment_name] --num_epochs 999 --train_split 0.9 --break_count 15 --batch_size 16 --clip_size 1 --noise_level 0.2 --class_weights --log_training --seed_only --overlap_class`
+
+
+3-Class (Transition)
+`!python train.py --repo_path [destination of git clone] ./experiments/[experiment_name]/data --model_name [experiment_name] --num_epochs 999 --train_split 0.9 --break_count 15 --batch_size 16 --clip_size 1 --noise_level 0.2 --class_weights --log_training --seed_only --transition_class`
+
+
+4-Class
+`!python train.py --repo_path [destination of git clone] ./experiments/[experiment_name]/data --model_name [experiment_name] --num_epochs 999 --train_split 0.9 --break_count 15 --batch_size 16 --clip_size 1 --noise_level 0.2 --class_weights --log_training --seed_only --overlap_class --transition_class`
+
+[Colab Notebook](https://colab.research.google.com/drive/1h2cI0ZgMKTKJruuP5C0MTyZvbF2gvvCz).
+
 
 ###
 
