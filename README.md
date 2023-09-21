@@ -1,5 +1,9 @@
 # Isolating Child Speech using Convolutional Neural Networks
 
+## Replicating Experiments
+
+
+
 ## Background
 
 Gathering targeted child speech data in both research and classroom settings consequently involves the capture of non-targeted adult speech in the recordings, often as prompts for the child speaker or in conversational turn-taking tasks [^1^]. To utilize this data in future work, researchers must undergo a labor-intensive identification process to isolate the child speech, thereby constraining resources and limiting the growth of extensive child speaker datasets for speech pathology research.
